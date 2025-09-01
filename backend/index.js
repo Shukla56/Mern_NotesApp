@@ -6,7 +6,7 @@ import AuthRoutes from './routes/Auth.js'
 import NotesRoutes from './routes/Notes.js'
 import cookieParser from 'cookie-parser'
 dotenv.config()
-const PORT=process.env.PORT || 5000
+const PORT=process.env.PORT 
 const app=express()
 
 DbCon()
