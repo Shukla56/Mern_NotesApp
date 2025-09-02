@@ -10,11 +10,13 @@ const PORT=process.env.PORT
 const app=express()
 
 DbCon()
-
 app.use(cors({
+    origin: "https://mern-notes-app-99kf.vercel.app", // frontend url
     credentials: true,
-    origin: 'https://mern-notes-app-99kf.vercel.app'  // Replace with your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 app.use(cookieParser())
 app.use(express.json())
 app.use('/auth',AuthRoutes)
