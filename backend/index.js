@@ -13,7 +13,7 @@ DbCon()
 
 app.use(cors({
     credentials: true,
-    origin: 'mern-notes-app-99kf.vercel.app'  // Replace with your frontend URL
+    origin: 'origin: "https://mern-notes-app-99kf.vercel.app" '  // Replace with your frontend URL
 }));
 app.use(cookieParser())
 app.use(express.json())
