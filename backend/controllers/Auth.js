@@ -1,85 +1,101 @@
-import UserModel from "../models/User.js"
-import bycript from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import UserModel from "../models/User.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-const Register=async(req,res)=>{
-    try {
-          const {userName,email,password}=req.body
-          if (!userName || !email || !password) {
-            return res.status(303).json({success:true,message:" All faild are required"})
-          }
-          const ExiteingUser= await UserModel.findOne({email})
-          if (ExiteingUser) {
-            return res.status(303).json({success: true, message: "User already exists"});
+// Register
+const Register = async (req, res) => {
+  try {
+    const { userName, email, password } = req.body;
 
-            
-          }
-          const hasePassword= await bycript.hashSync(password,10)
-           const NewUser= new UserModel({
-            userName,email,password:hasePassword
-           })
-           await NewUser.save()
-           res.status(200).json({success:true,message:"User Register Successfully",user:NewUser})
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({success:true,message:" Internal server error"})
-        
-        
+    if (!userName || !email || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
     }
-}
 
-const Login=async(req,res)=>{
-    try {
-          const {email,password}=req.body
-          if (!email || !password) {
-            return res.status(303).json({success:true,message:" All faild are required"})
-            
-          }
-          const FindeUser=await UserModel.findOne({email})
-           if (!FindeUser) {
-            return res.status(404).json({success:false,message:" User Not Found"})
-            
-           }
-           const CheckPassword=await bycript.compare(password,FindeUser.password)
-           if (!CheckPassword) {
-            return res.status(404).json({success:true,message:" Invalid Password"})
-            
-           }
-           const token= await jwt.sign({userId:FindeUser._id},process.env.SecriteKey,{expiresIn:"3d"})
-           res.cookie('token',token,{
-            httpOnly:true,
-            secure:false,
-            maxAge:3 * 24 * 3600 * 1000
-           })
-           res.status(200).json({success:true,message:"user login successfully",user:FindeUser,token})
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({success:true,message:" Internal server error"})
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ success: false, message: "User already exists" });
     }
-}
 
-const Logout=async(req,res)=>{
-    try {
-        res.clearCookie('token')
-        return res.status(200).json({success:true,message:" Log out Successfully"})
+    const hashPassword = await bcrypt.hash(password, 10);
+    const newUser = new UserModel({
+      userName,
+      email,
+      password: hashPassword,
+    });
+    await newUser.save();
 
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({success:true,message:" Internal server error"})
+    res.status(201).json({ success: true, message: "User registered successfully", user: newUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Login
+const Login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
     }
-}
-const isLogin=async(req,res)=>{
-    try {
-        const userId=req.userId
-        const user=await UserModel.findById(userId)
-              if (!user) {
-                return res.status(200).json({success:false,message:"User Not Logind",user,isLoggedIn:false})
-              }
-              res.status(200).json({success:true,message:"User is Login",user,isLoggedIn:true})
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({success:true,message:" Internal server error",isLoggedIn:false})
-    }
-}
 
-export {Register,Login,Logout,isLogin}
+    const foundUser = await UserModel.findOne({ email });
+    if (!foundUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const checkPassword = await bcrypt.compare(password, foundUser.password);
+    if (!checkPassword) {
+      return res.status(401).json({ success: false, message: "Invalid password" });
+    }
+
+    const token = jwt.sign({ userId: foundUser._id }, process.env.SecriteKey, { expiresIn: "3d" });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,        // ✅ https ke liye
+      sameSite: "none",    // ✅ cross-site requests ke liye
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 din
+    });
+
+    res.status(200).json({ success: true, message: "User login successfully", user: foundUser, token });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Logout
+const Logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    return res.status(200).json({ success: true, message: "Logout successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Check Login
+const isLogin = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(200).json({ success: false, message: "User not logged in", isLoggedIn: false });
+    }
+
+    res.status(200).json({ success: true, message: "User is logged in", user, isLoggedIn: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Internal server error", isLoggedIn: false });
+  }
+};
+
+export { Register, Login, Logout, isLogin };
