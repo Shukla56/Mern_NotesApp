@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'https://mern-notesapp-pqt4.onrender.com',
+    baseURL: 'https://mern-notesapp-pqt4.onrender.com,
     headers: {
         'Content-Type': 'application/json' // Removed extra space
     },
