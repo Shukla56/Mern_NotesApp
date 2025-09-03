@@ -50,11 +50,11 @@ const Login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid password" });
     }
 
-    const token = jwt.sign({ userId: foundUser._id }, process.env.SecriteKey, { expiresIn: "3d" });
+    const token = jwt.sign({ userId: foundUser._id }, process.env.SECRET_KEY, { expiresIn: "3d" });
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,        // ✅ https ke liye
+      secure: true,        // ✅ https ke liye
       sameSite: "none",    // ✅ cross-site requests ke liye
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 din
     });
