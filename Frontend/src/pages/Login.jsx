@@ -11,8 +11,8 @@ export default function Login() {
   const dispatch=useDispatch()
   const navigate=useNavigate()
   const [value,setValue]=useState({
-    email:"  ",
-    password:"   "
+    email:"rahul@gmail.com",
+    password:"password"
   })
 
   const hanldeChange=(e)=>{
