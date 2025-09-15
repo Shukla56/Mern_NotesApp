@@ -11,8 +11,8 @@ export default function Login() {
   const dispatch=useDispatch()
   const navigate=useNavigate()
   const [value,setValue]=useState({
-    email:"",
-    password:""
+    email:"abc@gmail.com",
+    password:"123456"
   })
 
   const hanldeChange=(e)=>{
@@ -27,7 +27,7 @@ export default function Login() {
         e.preventDefault()
         try {
           const request= await post('/auth/login',value)
-           const request= await axios.post('http://localhost:5000/auth/login',value)
+           //const request= await axios.post('http://localhost:5000/auth/login',value)
          
           const response= request.data
           if (response.success) {
