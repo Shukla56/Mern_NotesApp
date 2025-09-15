@@ -1,13 +1,13 @@
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
-  
 }
 
-.SerachInput{
-  border:none;
+/* Search Input */
+.SerachInput {
+  border: none;
   box-shadow: 5px 5px 8px gray;
   outline: none;
   width: 270px;
@@ -15,31 +15,88 @@
   padding-right: 10px;
   height: 40px;
   border-radius: 18px;
+  transition: 0.3s ease;
 }
-.bottomContent{
+
+/* Content Section */
+.bottomContent {
   margin-top: 80px;
 }
 .bottomContent h5 {
   color: rgb(119, 111, 111);
   font-weight: bold;
 }
-.modal{
+
+/* Modal */
+.modal {
   margin-top: 90px;
 }
-.Dropdown{
-  width: 50px ;
+
+/* Dropdown */
+.Dropdown {
+  width: 50px;
   height: 80px;
   margin-bottom: 120px;
   right: 5px;
-position: absolute;
-border-radius: 10px;
-box-shadow: 10px 10px 10px gray;
-  background-color:white;
+  position: absolute;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px gray;
+  background-color: white;
   display: flex;
   visibility: visible;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-transition: 0.9s ease;
+  transition: 0.9s ease;
 }
 
+/* ===================== */
+/* 📱 Mobile (max 600px) */
+/* ===================== */
+@media (max-width: 600px) {
+  .SerachInput {
+    width: 90%;       /* full width for mobile */
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .bottomContent {
+    margin-top: 40px;
+    padding: 0 10px;
+  }
+
+  .Dropdown {
+    width: 80%;
+    height: auto;
+    right: 10px;
+    margin-bottom: 20px;
+  }
+}
+
+/* ===================== */
+/* 📲 Tablet (601px–900px) */
+/* ===================== */
+@media (min-width: 601px) and (max-width: 900px) {
+  .SerachInput {
+    width: 70%;
+    height: 38px;
+    font-size: 15px;
+  }
+
+  .Dropdown {
+    width: 150px;
+    height: auto;
+    right: 15px;
+  }
+}
+
+/* ===================== */
+/* 💻 Large screens (901px+) */
+/* ===================== */
+@media (min-width: 901px) {
+  .SerachInput {
+    width: 320px;
+    height: 42px;
+    font-size: 16px;
+  }
+}
